@@ -1,0 +1,10 @@
+- [ ] build a switch to use wget if curl is not available
+- [ ] build functionality to "reverse" what you just did
+    - the_better_git_init -d "experimenting with R" -> thinking: oh no, this should have been private
+    - the_better_git_init --delete-remote -> goes through the same logic, but just performs a DELETE https://api.github.com/user/repos request
+- [ ] --rename <new_name> flag to rename current repo
+    -> pondering: is this tool still a git init tool? or more of a git sentinal... just create another tool I guess huh?
+- [ ] support gitlab (idk how gitlab personal access tokens look like but gh ones start with 'github_pat_' ... maybe based on the token-value/token-prefix it could be decided which api/platform to use)
+- [ ] get rid of jq (or should we? ¯\\_(ツ)_/¯)
+- [ ] test functionality on MacOS
+- [ ] add unit-tests

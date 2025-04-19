@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+# the_better_git_init
+
+_setup() {
+    set -Eeuo pipefail
+    trap 'echo "Caught Ctrl+C! Exiting gracefully."; exit 1' SIGINT
+    trap 'echo "Caught termination signal! Exiting gracefully."; exit 1' SIGTERM
+    trap - ERR EXIT
+
+    SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
+    readonly SCRIPT_DIR
+
+    ROOT_SCRIPT="$(basename "$0")"
+    readonly ROOT_SCRIPT
+
+    # Load shared libraries
+    source "$SCRIPT_DIR/lib/utils.sh"
+    source "$SCRIPT_DIR/lib/logger.sh"
+    source "$SCRIPT_DIR/lib/usage.sh"
+
+    source "$SCRIPT_DIR/lib/repo_service.sh"
+    source "$SCRIPT_DIR/lib/github/api.sh"
+
+    logger::setup_colors
+    utils::need_cmd "curl"
+    utils::need_cmd "git"
+    utils::need_cmd "jq"
+
+    source "${SCRIPT_DIR}/.env"
+}
+
+_parse_args() {
+    PRIVATE=false
+    DESCRIPTION=""
+
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+        -h | --help)
+            usage::general
+            ;;
+        --private)
+            PRIVATE=true
+            shift
+            ;;
+        -d | --description)
+            if [[ -n "${2-}" && ! "$2" =~ ^- ]]; then
+                DESCRIPTION="$2"
+                shift 2
+            else
+                logger::error "Option '$1' requires an argument."
+                exit 1
+            fi
+            ;;
+        *)
+            logger::error "Invalid option or command."
+            logger::info "Use '${ROOT_SCRIPT} --help' for usage information."
+            exit 1
+            ;;
+        esac
+    done
+}
+
+main() {
+    _setup
+    _parse_args "$@"
+
+    repo_service::create "$PRIVATE" "$DESCRIPTION"
+    git_local::init_and_link_repo "$repo_ssh_url"
+
+    logger::info "Setup complete."
+}
+
+main "$@"
