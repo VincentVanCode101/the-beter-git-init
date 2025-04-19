@@ -20,6 +20,7 @@ _setup() {
 
     source "$SCRIPT_DIR/lib/repo_service.sh"
     source "$SCRIPT_DIR/lib/github/api.sh"
+    source "$SCRIPT_DIR/lib/git_local.sh"
 
     logger::setup_colors
     utils::need_cmd "curl"
