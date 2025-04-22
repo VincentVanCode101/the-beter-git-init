@@ -8,3 +8,5 @@
 - [ ] get rid of jq (or should we? ¯\\_(ツ)_/¯)
 - [ ] test functionality on MacOS
 - [ ] add unit-tests
+- [ ] stop commiting to main
+- [ ] finish todos
